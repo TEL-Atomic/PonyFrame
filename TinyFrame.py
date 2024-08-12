@@ -323,7 +323,7 @@ class TinyFrame:
             lst = self.id_listeners[frame.id]
             rv = lst['fn'](self, frame)
             if rv == TF.CLOSE or rv is None:
-                self.id_listeners[frame.id] = None
+                self.id_listeners.pop(frame.id) #changed from self.id_listeners[frame.id] = None to keep dictionary from growing
                 return
             elif rv == TF.RENEW:
                 lst.age = 0
