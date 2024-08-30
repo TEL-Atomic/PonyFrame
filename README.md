@@ -9,11 +9,12 @@ This implements error checking for serial communications.
 Usage, tested on circuitpython on the Xiao RP2040:
 
 first enable serial communications, not just the interactive terminal. Add the following to boot.py
-'''
+```
 import usb_cdc
 usb_cdc.enable(console=True, data=True)
-'''
-'''
+```
+
+```
 code.py:
 
 import asyncio
@@ -102,7 +103,8 @@ async def fallback_listener(self, frame):
 
 example = aioPonyFrame_example()
 asyncio.run(example.main())
-'''      
+
+```   
 
 start of computer program: 
 
