@@ -8,13 +8,13 @@ This implements error checking for serial communications.
 
 Usage, tested on circuitpython on the Xiao RP2040:
 
-first enable serial communications, not just the interactive terminal. Add the following to boot.py
+first enable serial communications, not just the console. Add the following to boot.py
 ```
 import usb_cdc
 usb_cdc.enable(console=True, data=True)
 ```
 
-```
+```python
 code.py:
 
 import asyncio
@@ -106,7 +106,8 @@ asyncio.run(example.main())
 
 ```   
 
-start of computer program: 
+Below is a basic computer program to interface with the above microcontroller program. 
+It uses PonyFrame, not aioPonyFrame
 
 TYPE_RESPONSE = 0x0000
 TYPE_STATUS = 0x0001
