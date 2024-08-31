@@ -320,6 +320,7 @@ class TinyFrame:
         if frame.id in self.id_listeners and self.id_listeners[frame.id] is not None:
             lst = self.id_listeners[frame.id]
             rv = await lst['fn'](self, frame)
+            
             if rv == TF.CLOSE or rv is None:
                 self.id_listeners[frame.id] = None
                 return
