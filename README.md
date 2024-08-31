@@ -1,12 +1,19 @@
 # aioPonyFrame
+TinyFrame is a simple library for building and parsing data frames to be sent over a serial interface (e.g. UART, telnet, socket). The code is written to build with --std=gnu99 and mostly compatible with --std=gnu89.
 
-This is based on [PonyFrame](https://github.com/MightyPork/PonyFrame), but adapted for use with asyncio
+[PonyFrame](https://github.com/MightyPork/PonyFrame) is a port of TinyFrame to Python
 
-PonyFrame itself is based on [TinyFrame](https://github.com/MightyPork/TinyFrame). Overall there might be missing pieces and holes, but it gets at least some jobs done.
+aioPonyFrame is a fork of PonyFrame for use with asyncio
 
-This implements error checking for serial communications. 
+Overall there might be missing pieces and holes, but it gets at least some jobs done.
 
-Usage, tested on circuitpython on the Xiao RP2040:
+The library provides a high level interface for passing messages between the two peers. Multi-message sessions, response listeners, checksums, timeouts are all handled by the library.
+
+TinyFrame is suitable for a wide range of applications, including inter-microcontroller communication, as a protocol for FTDI-based PC applications or for messaging through UDP packets.
+
+The library lets you register listeners (callback functions) to wait for (1) any frame, (2) a particular frame Type, or (3) a specific message ID. This high-level API is general enough to implement most communication patterns.
+
+Usage: (tested on circuitpython 9.1.1 on the Xiao RP2040)
 
 first enable serial communications, not just the console. Add the following to boot.py
 ```
