@@ -197,16 +197,15 @@ class TinyFrame:
 
         return (id, buf)
 
-    def accept(self, bytes):
+    async def accept(self, bytes):
         """
         Parse bytes received on the serial port
         """
         for b in bytes:
-            self.accept_byte(b)
+            await self.accept_byte(b)
 
-    def accept_byte(self, b:int):
+    async def accept_byte(self, b:int):
         # TODO this seems ripe for rewrite to avoid repetitive code
-
         if self._CKSUM_BYTES is None:
             self._CKSUM_BYTES = self._calc_cksum_bytes()
 
@@ -277,7 +276,7 @@ class TinyFrame:
                     self.reset_parser()
                 else:
                     if self.rf.len == 0:
-                        self.handle_rx_frame()
+                        await self.handle_rx_frame()
                         self.reset_parser()
                     else:
                         self.ps = 'PLD'
@@ -298,7 +297,7 @@ class TinyFrame:
                     self.rlen = self._CKSUM_BYTES
                     self.rbuf = bytearray()
                 else:
-                    self.handle_rx_frame()
+                    await self.handle_rx_frame()
                     self.reset_parser()
             return
 
@@ -312,18 +311,18 @@ class TinyFrame:
                 if pck != actual:
                     self.reset_parser()
                 else:
-                    self.handle_rx_frame()
+                    await self.handle_rx_frame()
                     self.reset_parser()
             return
 
-    def handle_rx_frame(self):
+    async def handle_rx_frame(self):
         frame = self.rf
-
         if frame.id in self.id_listeners and self.id_listeners[frame.id] is not None:
             lst = self.id_listeners[frame.id]
-            rv = lst['fn'](self, frame)
+            rv = await lst['fn'](self, frame)
+            
             if rv == TF.CLOSE or rv is None:
-                self.id_listeners.pop(frame.id) #changed from self.id_listeners[frame.id] = None to keep dictionary from growing
+                self.id_listeners[frame.id] = None
                 return
             elif rv == TF.RENEW:
                 lst.age = 0
@@ -334,16 +333,15 @@ class TinyFrame:
 
         if frame.type in self.type_listeners and self.type_listeners[frame.type] is not None:
             lst = self.type_listeners[frame.type]
-            rv = lst['fn'](self, frame)
+            rv = await lst['fn'](self,frame)
             if rv == TF.CLOSE:
                 self.type_listeners[frame.type] = None
                 return
             elif rv != TF.NEXT:
                 return
-
         if self.fallback_listener is not None:
             lst = self.fallback_listener
-            rv = lst['fn'](self, frame)
+            rv = await lst['fn'](self, frame)
             if rv == TF.CLOSE:
                 self.fallback_listener = None
 
